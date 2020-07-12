@@ -5,11 +5,14 @@ import java.util.function.BiPredicate;
 
 
 public class SortUtil {
-  static void swapListElements(BiPredicate<Integer, Integer> orderCheck, List<Integer> arr, int x, int y) {
-    if (orderCheck.test(arr.get(x), arr.get(y))) {
-      Integer t = arr.get(y);
-      arr.set(y, arr.get(x));
-      arr.set(x, t);
-    }
+
+  static BiPredicate<Integer, Integer> getSortPredicate(List<Integer> arr, Boolean asc){
+    return (i, j) -> asc? arr.get(i) > arr.get(j) : arr.get(i) < arr.get(j);
+  }
+
+  static void swapElements(List<Integer> arr, int x, int y) {
+    Integer t = arr.get(y);
+    arr.set(y, arr.get(x));
+    arr.set(x, t);
   }
 }

@@ -12,7 +12,7 @@ public class SortTest {
     List<Integer> a = SortTest.generateIntegerArray(10);
     System.out.println("Unsorted: " + a);
 
-    System.out.print("Select sort type: (b)ubble: ");
+    System.out.print("Select sort type: (b)ubble, (s)election: ");
     Scanner s = new Scanner(System.in);
     String sortType = s.nextLine();
 
@@ -29,6 +29,9 @@ public class SortTest {
     switch (sortType) {
       case "b":
         sortFunc = Sorts::bubbleSort;
+        break;
+      case "s":
+        sortFunc = Sorts::selectionSort;
         break;
       default:
         System.out.println("Invalid sort type selected.");

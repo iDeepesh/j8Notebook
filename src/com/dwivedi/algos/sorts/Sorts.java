@@ -33,4 +33,24 @@ public class Sorts {
           SortUtil.swapElements(arr, i, s);
         });
   }
+
+  static void insertionSort(List<Integer> arr, Boolean asc) {
+    System.out.print("Insertion sort - ");
+
+    BiPredicate<Integer, Integer> p = SortUtil.getSortPredicate(arr, asc);
+
+    IntStream.range(1, arr.size())
+        .forEach(i -> {
+          int k = IntStream.range(0, i)
+              .reduce(-1, (m ,j) -> {
+                if(!p.test(j, i)) {
+                  m=j;
+                }
+                return m;
+              });
+
+          IntStream.range(k+1, i)
+              .forEach(n -> SortUtil.swapElements(arr, n, i));
+        });
+  }
 }

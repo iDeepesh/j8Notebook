@@ -37,7 +37,8 @@ public class SortTest {
   private static List<Integer> generateIntegerArray(int n) {
     List<Integer> a = new ArrayList<>();
 
-    IntStream.range(0, n).forEach(i -> a.add((int) (Math.random() * 1000)));
+    IntStream.range(0, n)
+        .forEach(i -> a.add((int) (Math.random() * 1000)));
 
     return a;
   }

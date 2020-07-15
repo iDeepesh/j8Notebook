@@ -7,7 +7,7 @@ import java.util.function.BiPredicate;
 public class SortUtil {
 
   static BiPredicate<Integer, Integer> getSortPredicate(List<Integer> arr, Boolean asc) {
-    return (i, j) -> asc ? arr.get(i) > arr.get(j) : arr.get(i) < arr.get(j);
+    return (i, j) -> asc ? arr.get(i) < arr.get(j) : arr.get(i) > arr.get(j);
   }
 
   static void swapElements(List<Integer> arr, int x, int y) {

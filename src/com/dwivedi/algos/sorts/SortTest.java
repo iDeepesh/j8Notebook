@@ -19,19 +19,23 @@ public class SortTest {
     sortFuncMap.put('i', Sorts::insertionSort);
     sortFuncMap.put('m', Sorts::mergeSort);
     sortFuncMap.put('q', Sorts::quickSort);
+    sortFuncMap.put('r', Sorts::radixSort);
+    sortFuncMap.put('h', Sorts::heapSort);
 
     sortDesc.put('b', "Bubble sort");
     sortDesc.put('s', "Selection sort");
     sortDesc.put('i', "Insertion sort");
     sortDesc.put('m', "Merge sort");
     sortDesc.put('q', "Quick sort");
+    sortDesc.put('r', "Radix sort");
+    sortDesc.put('h', "Heap sort");
   }
 
   public static void main(String[] args) {
     List<Integer> a = SortTest.generateIntegerArray(10);
     System.out.println("Unsorted: " + a);
 
-    System.out.print("Select sort type: (b)ubble, (s)election, (i)nsertion, (m)erge, (q)uick: ");
+    System.out.print("Select sort type: (b)ubble, (s)election, (i)nsertion, (m)erge, (q)uick, (r)adix, h(eap): ");
     Scanner s = new Scanner(System.in);
     Character sortType = s.next()
         .charAt(0);

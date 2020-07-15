@@ -114,4 +114,46 @@ public class Sorts {
 
     return arr;
   }
+
+  static List<Integer> radixSort(List<Integer> arr, Boolean asc) {
+    final int BUCKET_COUNT = 10;
+    final int MULTIPLIER = 10;
+
+    Integer max = arr.stream()
+        .max(Integer::compare)
+        .get();
+
+    List<List<Integer>> buckets = new ArrayList<>();
+    IntStream.range(0, BUCKET_COUNT)
+        .forEach(i -> buckets.add(new ArrayList<>()));
+
+    Integer d = 1;
+    while (max / d != 0) {
+      int r1 = d, r2 = d * MULTIPLIER;
+
+      IntStream.range(0, arr.size())
+          .forEach(i -> {
+            int n = (arr.get(i) % r2) / r1;
+            n = asc ? n : (BUCKET_COUNT - n - 1);
+            buckets.get(n)
+                .add(arr.get(i));
+          });
+
+      arr.clear();
+      buckets.stream()
+          .forEach(b -> {
+            arr.addAll(b);
+            b.clear();
+          });
+
+      d *= MULTIPLIER;
+    }
+
+    return arr;
+  }
+  
+  static List<Integer> heapSort(List<Integer> arr, Boolean asc) {
+    System.out.println("To be implemented.....");
+    return arr;
+  }
 }

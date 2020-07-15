@@ -89,4 +89,29 @@ public class Sorts {
 
     return m;
   }
+
+  static List<Integer> quickSort(List<Integer> arr, Boolean asc) {
+    if (arr.size() < 1) {
+      return arr;
+    }
+
+    BiPredicate<Integer, Integer> p = SortUtil.getSortPredicate(arr, asc);
+
+    int r = arr.size() - 1;
+    int a = IntStream.range(0, r)
+        .reduce(0, (c, i) -> {
+          if (p.test(i, r)) {
+            SortUtil.swapElements(arr, c, i);
+            c++;
+          }
+          return c;
+        });
+
+    SortUtil.swapElements(arr, a, r);
+
+    Sorts.quickSort(arr.subList(0, a), asc);
+    Sorts.quickSort(arr.subList(a + 1, arr.size()), asc);
+
+    return arr;
+  }
 }

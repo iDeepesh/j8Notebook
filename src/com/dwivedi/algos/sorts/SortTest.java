@@ -18,18 +18,20 @@ public class SortTest {
     sortFuncMap.put('s', Sorts::selectionSort);
     sortFuncMap.put('i', Sorts::insertionSort);
     sortFuncMap.put('m', Sorts::mergeSort);
+    sortFuncMap.put('q', Sorts::quickSort);
 
     sortDesc.put('b', "Bubble sort");
     sortDesc.put('s', "Selection sort");
     sortDesc.put('i', "Insertion sort");
     sortDesc.put('m', "Merge sort");
+    sortDesc.put('q', "Quick sort");
   }
 
   public static void main(String[] args) {
     List<Integer> a = SortTest.generateIntegerArray(10);
     System.out.println("Unsorted: " + a);
 
-    System.out.print("Select sort type: (b)ubble, (s)election, (i)nsertion, (m)erge: ");
+    System.out.print("Select sort type: (b)ubble, (s)election, (i)nsertion, (m)erge, (q)uick: ");
     Scanner s = new Scanner(System.in);
     Character sortType = s.next()
         .charAt(0);

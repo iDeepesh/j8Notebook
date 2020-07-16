@@ -129,7 +129,8 @@ public class Sorts {
 
     Integer d = 1;
     while (max / d != 0) {
-      int r1 = d, r2 = d * MULTIPLIER;
+      int r1 = d;
+      int r2 = d * MULTIPLIER;
 
       IntStream.range(0, arr.size())
           .forEach(i -> {
@@ -151,7 +152,7 @@ public class Sorts {
 
     return arr;
   }
-  
+
   static List<Integer> heapSort(List<Integer> arr, Boolean asc) {
     System.out.println("To be implemented.....");
     return arr;

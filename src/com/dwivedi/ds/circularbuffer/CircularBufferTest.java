@@ -13,11 +13,11 @@ public class CircularBufferTest {
         .charAt(0);
     int size = 3;
     Circular cq;
-    if (c == 'f') {
-      System.out.println("You selected fifo so getting stack with size of " + size);
+    if (c == 'l') {
+      System.out.println("You selected lifo so getting stack with size of " + size);
       cq = new CircularStack(size);
     } else {
-      System.out.println("You selected lifo so getting queue with size of " + size);
+      System.out.println("You selected fifo so getting queue with size of " + size);
       cq = new CircularQueue(size);
     }
 

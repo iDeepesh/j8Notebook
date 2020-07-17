@@ -10,12 +10,12 @@ public class Heap {
   private BiPredicate<Integer, Integer> p;
   private int len;
 
-  Heap(BiPredicate<Integer, Integer> p, int size) {
+  public Heap(BiPredicate<Integer, Integer> p, int size) {
     this.p = p;
     this.hp = new Integer[size];
   }
 
-  boolean add(Integer n) {
+  public boolean add(Integer n) {
     if (len == hp.length) {
       return false;
     }
@@ -26,11 +26,11 @@ public class Heap {
     return true;
   }
 
-  Optional<Integer> peek() {
+  public Optional<Integer> peek() {
     return len > 0 ? Optional.of(hp[0]) : Optional.empty();
   }
 
-  Optional<Integer> remove() {
+  public Optional<Integer> remove() {
     if (len <= 0) {
       return Optional.empty();
     }

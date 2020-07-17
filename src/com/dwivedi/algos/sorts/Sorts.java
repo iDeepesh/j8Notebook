@@ -1,5 +1,6 @@
 package com.dwivedi.algos.sorts;
 
+import com.dwivedi.ds.heap.Heap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -154,7 +155,16 @@ public class Sorts {
   }
 
   static List<Integer> heapSort(List<Integer> arr, Boolean asc) {
-    System.out.println("To be implemented.....");
+    BiPredicate<Integer, Integer> p = asc ? (x, y) -> x < y : (x, y) -> x > y;
+    Heap hp = new Heap(p, arr.size());
+
+    arr.stream()
+        .forEach(e -> hp.add(e));
+
+    IntStream.range(0, arr.size())
+        .forEach(i -> arr.set(i, hp.remove()
+            .get()));
+
     return arr;
   }
 }

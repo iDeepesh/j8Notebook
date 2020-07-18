@@ -1,11 +1,13 @@
 package com.dwivedi.ds.tree;
 
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
 
 
 public class BinaryTree {
 
-  private static String PRINT_PREFIX =    "────────";
+  private static String PRINT_PREFIX = "────────";
   private static String EMPTY_TAB_SPACE = "        ";
   private static String FULL_VERTICAL = "|";
   private static String HALF_VERTICAL = "└";
@@ -27,7 +29,7 @@ public class BinaryTree {
     String fVert = n.left == null ? HALF_VERTICAL : "";
     printTreeRecursive(Optional.ofNullable(n.right), fPref, fVert);
 
-    printTreeRecursive(Optional.ofNullable(n.left),pref + EMPTY_TAB_SPACE, HALF_VERTICAL);
+    printTreeRecursive(Optional.ofNullable(n.left), pref + EMPTY_TAB_SPACE, HALF_VERTICAL);
   }
 
   static void preOrderTraversal(Node r) {
@@ -60,8 +62,20 @@ public class BinaryTree {
     System.out.print(r.t.toString() + ", ");
   }
 
-  static void breadthFirstTraversal(Node r){
-    System.out.println("To be implemented");
+  static void breadthFirstTraversal(Node r) {
+    Queue<Node> q = new LinkedList<>();
+    q.add(r);
+
+    while (q.peek() != null) {
+      Node n = q.remove();
+      System.out.print(n.t + ", ");
+      if (n.left != null) {
+        q.add(n.left);
+      }
+      if (n.right != null) {
+        q.add(n.right);
+      }
+    }
   }
 
   //Add - add a new node to tree

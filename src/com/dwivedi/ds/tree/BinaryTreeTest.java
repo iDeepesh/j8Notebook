@@ -2,8 +2,8 @@ package com.dwivedi.ds.tree;
 
 public class BinaryTreeTest {
   public static void main(String[] args) {
-//    Node r = BinaryTreeTest.populateIntegerTree(3);
-    Node r = BinaryTreeTest.populateStringTree(3);
+    Node r = BinaryTreeTest.populateIntegerTree(3);
+//    Node r = BinaryTreeTest.populateStringTree(3);
     BinaryTree.printTree(r);
 
     System.out.println();

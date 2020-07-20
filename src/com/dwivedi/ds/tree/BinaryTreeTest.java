@@ -1,9 +1,24 @@
 package com.dwivedi.ds.tree;
 
+import com.dwivedi.ds.tree.bst.BinarySearchTree;
+import java.util.Comparator;
+
+
 public class BinaryTreeTest {
+
+  public static class Person {
+    public int age;
+
+    public String toString() {
+      return "[age:" + age + "]";
+    }
+  }
+
   public static void main(String[] args) {
-    Node r = BinaryTreeTest.populateIntegerTree(3);
-//    Node r = BinaryTreeTest.populateStringTree(3);
+    Node<Integer> r = BinaryTreeTest.populateIntegerTree(3);
+//    Node<String> r = BinaryTreeTest.populateStringTree(3);
+//    Node<Person> r = BinaryTreeTest.populatePersonTree(3);
+
     BinaryTree.printTree(r);
 
     System.out.println();
@@ -56,6 +71,27 @@ public class BinaryTreeTest {
 
     if (d < 0.8) {
       n.right = populateStringTree(depth - 1);
+    }
+
+    return n;
+  }
+
+  static Node<Person> populatePersonTree(int depth) {
+    if (depth < 0) {
+      return null;
+    }
+
+    Node<Person> n = new Node<>();
+    n.t = new Person();
+    n.t.age = (int) (Math.random() * 1000);
+
+    double d = Math.random();
+    if (d > 0.2) {
+      n.left = populatePersonTree(depth - 1);
+    }
+
+    if (d < 0.8) {
+      n.right = populatePersonTree(depth - 1);
     }
 
     return n;

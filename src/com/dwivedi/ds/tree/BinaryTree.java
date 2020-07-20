@@ -5,70 +5,72 @@ import java.util.Optional;
 import java.util.Queue;
 
 
-public class BinaryTree {
+public class BinaryTree <T> {
 
-  private static String PRINT_PREFIX = "────────";
-  private static String EMPTY_TAB_SPACE = "        ";
+  private static String PRINT_PREFIX = "─────────";
+  private static String PRINT_PREFIX_L = "─l───────";
+  private static String PRINT_PREFIX_R = "─r───────";
+  private static String EMPTY_TAB_SPACE = "         ";
   private static String FULL_VERTICAL = "|";
   private static String HALF_VERTICAL = "└";
 
-  static <T> void printTree(Node<T> n) {
-    printTreeRecursive(Optional.of(n), "", "");
+  public static <T> void printTree(Node<T> n) {
+    printTreeRecursive(Optional.of(n), "", "", PRINT_PREFIX);
   }
 
-  private static <T> void printTreeRecursive(Optional<Node<T>> r, String pref, String vPref) {
+  private static <T> void printTreeRecursive(Optional<Node<T>> r, String pref, String vPref, String printPref) {
     if (!r.isPresent()) {
       return;
     }
 
     Node<T> n = r.get();
 
-    System.out.println(pref + vPref + PRINT_PREFIX + n.t);
+    System.out.println(pref + vPref + printPref + n);
 
     String fPref = pref + EMPTY_TAB_SPACE + (n.left == null ? "" : FULL_VERTICAL);
     String fVert = n.left == null ? HALF_VERTICAL : "";
-    printTreeRecursive(Optional.ofNullable(n.right), fPref, fVert);
+    printTreeRecursive(Optional.ofNullable(n.right), fPref, fVert, PRINT_PREFIX_R);
 
-    printTreeRecursive(Optional.ofNullable(n.left), pref + EMPTY_TAB_SPACE, HALF_VERTICAL);
+    printTreeRecursive(Optional.ofNullable(n.left), pref + EMPTY_TAB_SPACE, HALF_VERTICAL, PRINT_PREFIX_L);
   }
 
-  static void preOrderTraversal(Node r) {
+  public static <T> void preOrderTraversal(Node<T> r) {
     if (r == null) {
       return;
     }
 
-    System.out.print(r.t.toString() + ", ");
+    System.out.print(r + ", ");
     preOrderTraversal(r.left);
     preOrderTraversal(r.right);
   }
 
-  static void inOrderTraversal(Node r) {
+  public static <T> void inOrderTraversal(Node<T> r) {
     if (r == null) {
       return;
     }
 
     inOrderTraversal(r.left);
-    System.out.print(r.t.toString() + ", ");
+    System.out.print(r + ", ");
     inOrderTraversal(r.right);
   }
 
-  static void postOrderTraversal(Node r) {
+  public static <T> void postOrderTraversal(Node<T> r) {
     if (r == null) {
       return;
     }
 
     postOrderTraversal(r.left);
     postOrderTraversal(r.right);
-    System.out.print(r.t.toString() + ", ");
+    System.out.print(r + ", ");
   }
 
-  static void breadthFirstTraversal(Node r) {
+  public static <T> void breadthFirstTraversal(Node<T> r) {
     Queue<Node> q = new LinkedList<>();
     q.add(r);
 
     while (q.peek() != null) {
       Node n = q.remove();
-      System.out.print(n.t + ", ");
+      System.out.print(n + ", ");
       if (n.left != null) {
         q.add(n.left);
       }
@@ -77,10 +79,4 @@ public class BinaryTree {
       }
     }
   }
-
-  //Add - add a new node to tree
-  //Delete - delete a node from tree
-  //CheckBST - checks if the tree is bst or not
-  //Find minimum value
-  //Find maximum value
 }

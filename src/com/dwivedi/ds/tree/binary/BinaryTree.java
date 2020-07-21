@@ -1,5 +1,6 @@
-package com.dwivedi.ds.tree;
+package com.dwivedi.ds.tree.binary;
 
+import com.dwivedi.ds.tree.Node;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
@@ -8,8 +9,8 @@ import java.util.Queue;
 public class BinaryTree <T> {
 
   private static String PRINT_PREFIX = "─────────";
-  private static String PRINT_PREFIX_L = "─l───────";
-  private static String PRINT_PREFIX_R = "─r───────";
+  private static String PRINT_PREFIX_L = "─L───────";
+  private static String PRINT_PREFIX_R = "─R───────";
   private static String EMPTY_TAB_SPACE = "         ";
   private static String FULL_VERTICAL = "|";
   private static String HALF_VERTICAL = "└";

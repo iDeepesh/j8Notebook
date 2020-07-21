@@ -1,7 +1,6 @@
-package com.dwivedi.ds.tree;
+package com.dwivedi.ds.tree.binary;
 
-import com.dwivedi.ds.tree.bst.BinarySearchTree;
-import java.util.Comparator;
+import com.dwivedi.ds.tree.Node;
 
 
 public class BinaryTreeTest {

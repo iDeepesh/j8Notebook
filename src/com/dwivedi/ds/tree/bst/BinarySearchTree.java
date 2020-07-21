@@ -1,7 +1,7 @@
 package com.dwivedi.ds.tree.bst;
 
-import com.dwivedi.ds.tree.BinaryTree;
 import com.dwivedi.ds.tree.Node;
+import com.dwivedi.ds.tree.binary.BinaryTree;
 import java.util.Comparator;
 import java.util.function.Supplier;
 
@@ -34,7 +34,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
 
   Node<T> delete(Node<T> r, T t) {
     if (r == null) {
-      return r;
+      return null;
     }
 
     int cRes = c.compare(r.t, t);
@@ -51,10 +51,10 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
         swapValues(r, max);
         r.left = delete(r.left, t);
       }
-    } else if (cRes > 0) {
-      r.left = delete(r.left, t);
-    } else {
+    } else if (cRes < 0) {
       r.right = delete(r.right, t);
+    } else {
+      r.left = delete(r.left, t);
     }
 
     return r;
@@ -66,27 +66,27 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
     n2.t = t;
   }
 
-//  Node<T> find(Node<T> r, T value) {
-//    if (r == null) {
-//      return r;
-//    }
-//
-//    int cRes = c.compare(r.t, value);
-//
-//    if (cRes == 0) {
-//      return r;
-//    }
-//
-//    if (cRes < 0) {
-//      return find(r.left, value);
-//    } else {
-//      return find(r.right, value);
-//    }
-//  }
+  Node<T> find(Node<T> r, T t) {
+    if (r == null) {
+      return null;
+    }
+
+    int cRes = c.compare(r.t, t);
+
+    if (cRes == 0) {
+      return r;
+    }
+
+    if (cRes < 0) {
+      return find(r.right, t);
+    } else {
+      return find(r.left, t);
+    }
+  }
 
   Node<T> findMax(Node<T> r) {
     if (r == null) {
-      return r;
+      return null;
     }
 
     if (r.right == null) {
@@ -98,7 +98,7 @@ public class BinarySearchTree<T> extends BinaryTree<T> {
 
   Node<T> findMin(Node<T> r) {
     if (r == null) {
-      return r;
+      return null;
     }
 
     if (r.left == null) {

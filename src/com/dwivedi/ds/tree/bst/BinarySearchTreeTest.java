@@ -27,24 +27,23 @@ public class BinarySearchTreeTest {
     }
   }
 
-  //ToDo: Cleanup raw usages of generics
-  private static Map<Character, BinarySearchTree> bstMap = new HashMap<>();
-  private static Map<Character, Supplier> randMap = new HashMap<>();
-  private static Map<Character, Function<String, Object>> converterMap = new HashMap<>();
+  public static void main(String[] args) {
+    System.out.print("What type of tree you want - (i)nteger, (p)erson? ");
+    Scanner s = new Scanner(System.in);
+    char ch = s.nextLine().charAt(0);
 
-  static {
-    bstMap.put('i', new BinarySearchTree<>(Integer::compare, () -> Integer.MIN_VALUE, () -> Integer.MAX_VALUE));
-    bstMap.put('p',
-        new BinarySearchTree<>(Comparator.comparingInt(x -> x.age), () -> Person.youngest, () -> Person.oldest));
-
-    randMap.put('i', () -> (int) (Math.random() * 1000));
-    randMap.put('p', () -> (new Person((int) (Math.random() * 100))));
-
-    converterMap.put('i', Integer::valueOf);
-    converterMap.put('p', (s) -> new Person(Integer.valueOf(s)));
+    if(ch == 'i'){
+      BinarySearchTree<Integer> bst = new BinarySearchTree<>(Integer::compare, () -> Integer.MIN_VALUE, () -> Integer.MAX_VALUE);
+      executeTreeTest(bst, () -> (int) (Math.random() * 1000), Integer::valueOf);
+    } else if (ch == 'p') {
+      BinarySearchTree<Person> bst = new BinarySearchTree<>(Comparator.comparingInt(x -> x.age), () -> Person.youngest, () -> Person.oldest);
+      executeTreeTest(bst, () -> (new Person((int) (Math.random() * 100))), (str) -> new Person(Integer.parseInt(str)));
+    } else {
+      System.out.println("Invalid selection!");
+    }
   }
 
-  public static void main(String[] args) {
+  static <T> void executeTreeTest(BinarySearchTree<T> bst, Supplier<T> rand, Function<String, T> converter){
     // create a tree
     // print
     // check if BST
@@ -52,12 +51,7 @@ public class BinarySearchTreeTest {
     // change a node with random value
     // again check if BST
 
-    System.out.print("What type of tree you want - (i)nteger, (p)erson? ");
-    Scanner s = new Scanner(System.in);
-    Character ch = s.nextLine().charAt(0);
-
-    //ToDo: Cleanup raw usage of generics
-    Node r = populateTree(10, bstMap.get(ch), randMap.get(ch));
+    Node<T> r = populateTree(10, bst, rand);
 
     BinarySearchTree.printTree(r);
 
@@ -66,30 +60,31 @@ public class BinarySearchTreeTest {
 
     System.out.println();
 
-    if (bstMap.get(ch).checkBST(r)) {
+    if (bst.checkBST(r)) {
       System.out.println("It's BST, yay!!");
     } else {
       System.out.println("It's not a BST :-(");
     }
 
-    System.out.println("The min node is: " + bstMap.get(ch).findMin(r));
-    System.out.println("The max node is: " + bstMap.get(ch).findMax(r));
+    System.out.println("The min node is: " + bst.findMin(r));
+    System.out.println("The max node is: " + bst.findMax(r));
 
     System.out.print("What node to delete: ");
-    r = bstMap.get(ch).delete(r, converterMap.get(ch).apply(s.nextLine()));
+    Scanner s = new Scanner(System.in);
+    r = bst.delete(r, converter.apply(s.nextLine()));
     BinarySearchTree.printTree(r);
 
-    System.out.print("Choose a value to change: ");
-    Node f = bstMap.get(ch).find(r, converterMap.get(ch).apply(s.nextLine()));
-    f.t = randMap.get(ch).get();
-    System.out.println("Replacing it with: " + f.t);
+    System.out.print("Choose a node to update: ");
+    Node<T> f = bst.find(r, converter.apply(s.nextLine()));
+    f.t = rand.get();
+    System.out.println("Replacing node value with: " + f.t);
 
     BinarySearchTree.printTree(r);
 
-    if (bstMap.get(ch).checkBST(r)) {
-      System.out.println("It's BST, yay!!");
+    if (bst.checkBST(r)) {
+      System.out.println("It's still a BST, yay!!");
     } else {
-      System.out.println("It's not a BST :-(");
+      System.out.println("It's not a BST anymore :-(");
     }
   }
 

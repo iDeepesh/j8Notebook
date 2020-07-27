@@ -1,7 +1,9 @@
 package com.dwivedi.ds.graph.adjacencylist;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -95,7 +97,7 @@ public class AdjacencyLists {
                     info.edgesByType.get(EdgeType.Forward).put(e.getHashKey(), e);
                   } else if (ui.arrival > vi.arrival && ui.departure < vi.departure) {
                     info.edgesByType.get(EdgeType.Backward).put(e.getHashKey(), e);
-                  } else if (vi.departure < ui.arrival) {
+                  } else if (vi.departure < ui.arrival) { //ToDo: Is this check enough
                     info.edgesByType.get(EdgeType.Cross).put(e.getHashKey(), e);
                   } else if (!t.containsKey(e.getHashKey())) {
                     System.out.println("\n\n\nFAILURE --Something is wrong!! Control should never reach here!!\n\n");
@@ -139,7 +141,7 @@ public class AdjacencyLists {
       }
       time = dep;
     }
-    //ToDo: can it use Lambda?
+    //ToDo: can it use lambda?
 //    n.edgeList.stream().forEach(e -> {
 //      time = depthFirstTraversalInternal(e.v, info, time);//time;
 //    });

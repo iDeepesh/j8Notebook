@@ -32,6 +32,8 @@ public class BinaryTree <T> {
     String fVert = n.left == null ? HALF_VERTICAL : "";
     printTreeRecursive(Optional.ofNullable(n.right), fPref, fVert, PRINT_PREFIX_R);
 
+//    System.out.println(pref + vPref + printPref + n);
+
     printTreeRecursive(Optional.ofNullable(n.left), pref + EMPTY_TAB_SPACE, HALF_VERTICAL, PRINT_PREFIX_L);
   }
 

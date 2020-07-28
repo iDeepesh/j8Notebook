@@ -51,6 +51,10 @@ public class AvlTreeTest {
   }
 
   static <T> Node<T> populateAvlTree(AvlTree<T> avl, Supplier<T> rand) {
+    //java 10+ ==> use var type
+    // var root = new Object(Node<T> value)
+    // IntStream.range(0, 25).forEach(i -> root.value = avl.add(root.value, rand.get()));
+
     AtomicReference<Node<T>> root = new AtomicReference<>();
     IntStream.range(0, 25).forEach(i -> root.set(avl.add(root.get(), rand.get())));
     return root.get();

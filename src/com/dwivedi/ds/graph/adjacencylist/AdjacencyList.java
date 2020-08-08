@@ -9,10 +9,11 @@ public class AdjacencyList<T> {
   public static class Edge<T> {
     Node<T> u;
     Node<T> v;
+    int weight;
 
     @Override
     public String toString() {
-      return u.id + "-" + v.id;
+      return u.id + "-" + v.id + ":" + weight;
     }
 
     public String getHashKey() {

@@ -31,9 +31,10 @@ public class AdjacencyListTest {
   }
 
   static <T> void testGraph(AdjacencyList<T> g) {
-    AdjacencyLists.printTree(g);
+    AdjacencyLists.printGraph(g);
     AdjacencyLists.breadthFirstTraversal(g);
     AdjacencyLists.depthFirstTraversal(g);
+    AdjacencyLists.dijkstraShortestPath(g, g.graph.get(0));
   }
 
   static <T> AdjacencyList<T> populateRandomGraph(int count, Supplier<T> rand) {
@@ -51,6 +52,7 @@ public class AdjacencyListTest {
           AdjacencyList.Edge<T> e = new AdjacencyList.Edge<>();
           e.u = n;
           e.v = g.graph.get(index.get(i));
+          e.weight = (int)(Math.random()*10);
           n.edgeList.add(e);
         }
       });
@@ -67,6 +69,7 @@ public class AdjacencyListTest {
         AdjacencyList.Edge<T> e = new AdjacencyList.Edge<>();
         e.u = u;
         e.v = v;
+        e.weight = (int)(Math.random()*10);
         u.edgeList.add(e);
       });
     });

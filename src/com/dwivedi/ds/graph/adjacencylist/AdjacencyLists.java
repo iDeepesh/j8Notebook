@@ -1,23 +1,31 @@
 package com.dwivedi.ds.graph.adjacencylist;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class AdjacencyLists {
   private static class NodeInfo<T> {
     AdjacencyList.Node<T> n;
     boolean visited;
+
+    // for determining edge type
     int arrival;
     int departure;
 
+    // for finding shortest path
+    int distance;
+    AdjacencyList.Node<T> parent;
+
     @Override
     public String toString() {
-      return "{arr=" + arrival + ", dep=" + departure + '}';
+      return "{arr=" + arrival + ", dep=" + departure + ", dist=" + distance + ", parent=" + (parent == null ? "None"
+          : parent.toStringShort()) + '}';
     }
   }
 
@@ -39,31 +47,29 @@ public class AdjacencyLists {
     Tree, Forward, Backward, Cross
   }
 
-  static <T> void printTree(AdjacencyList<T> g) {
+  static <T> void printGraph(AdjacencyList<T> g) {
     System.out.println("\nPrint graph structure:");
-    g.graph.stream()
-        .forEach(System.out::println);
+    g.graph.stream().forEach(System.out::println);
   }
 
-  private static <T> void printTreeDetailed(AdjacencyList<T> g, Info<T> info) {
-    System.out.println("\nPrint graph traversal:");
-    g.graph.stream()
-        .forEach(n -> {
-          System.out.println(n.toStringShort() + ", info=" + info.nodeInfo.get(n.id));
-        });
+  private static <T> void printGraphWithInfo(AdjacencyList<T> g, Info<T> info) {
+    System.out.println("\nPrint graph with info:");
+    g.graph.stream().forEach(n -> {
+      System.out.println(n.toStringShort() + ", info=" + info.nodeInfo.get(n.id));
+    });
+  }
 
-    info.edgesByType.entrySet()
-        .stream()
-        .forEach(e -> {
-          System.out.print(e.getKey() + " Edges: [ ");
-          e.getValue()
-              .entrySet()
-              .stream()
-              .forEach(e1 -> {
-                System.out.print(e1.getKey() + ", ");
-              });
-          System.out.println("]");
-        });
+  private static <T> void printGraphDetailed(AdjacencyList<T> g, Info<T> info) {
+    printGraphWithInfo(g, info);
+
+    System.out.println("\nPrint edge types:");
+    info.edgesByType.entrySet().stream().forEach(e -> {
+      System.out.print(e.getKey() + " Edges: [ ");
+      e.getValue().entrySet().stream().forEach(e1 -> {
+        System.out.print(e1.getKey() + ", ");
+      });
+      System.out.println("]");
+    });
   }
 
   static <T> String nodeDescription(AdjacencyList.Node<T> n) {
@@ -78,37 +84,35 @@ public class AdjacencyLists {
     segregateEdgesByType(g, info);
 
     System.out.println();
-    printTreeDetailed(g, info);
+    printGraphDetailed(g, info);
   }
 
   private static <T> void segregateEdgesByType(AdjacencyList<T> g, Info<T> info) {
     Map<String, AdjacencyList.Edge<T>> t = info.edgesByType.get(EdgeType.Tree);
     Map<Integer, NodeInfo<T>> ni = info.nodeInfo;
 
-    g.graph.stream()
-        .forEach(n -> {
-          n.edgeList.stream()
-              .forEach(e -> {
-                NodeInfo<T> ui = ni.get(e.u.id);
-                NodeInfo<T> vi = ni.get(e.v.id);
+    g.graph.stream().forEach(n -> {
+      n.edgeList.stream().forEach(e -> {
+        NodeInfo<T> ui = ni.get(e.u.id);
+        NodeInfo<T> vi = ni.get(e.v.id);
 
-                if (ui != null && vi != null) {
-                  if (ui.arrival < vi.arrival && vi.departure < ui.departure && !t.containsKey(e.getHashKey())) {
-                    info.edgesByType.get(EdgeType.Forward).put(e.getHashKey(), e);
-                  } else if (ui.arrival > vi.arrival && ui.departure < vi.departure) {
-                    info.edgesByType.get(EdgeType.Backward).put(e.getHashKey(), e);
-                  } else if (vi.departure < ui.arrival) { //ToDo: Is this check enough
-                    info.edgesByType.get(EdgeType.Cross).put(e.getHashKey(), e);
-                  } else if (!t.containsKey(e.getHashKey())) {
-                    System.out.println("\n\n\nFAILURE --Something is wrong!! Control should never reach here!!\n\n");
-                  }
-                } else {
-                  System.out.print("Node not part of connected graph: ");
-                  System.out.print(ui == null? e.u.id: "");
-                  System.out.println(vi == null? e.v.id: "");
-                }
-              });
-        });
+        if (ui != null && vi != null) {
+          if (ui.arrival < vi.arrival && vi.departure < ui.departure && !t.containsKey(e.getHashKey())) {
+            info.edgesByType.get(EdgeType.Forward).put(e.getHashKey(), e);
+          } else if (ui.arrival > vi.arrival && ui.departure < vi.departure) {
+            info.edgesByType.get(EdgeType.Backward).put(e.getHashKey(), e);
+          } else if (vi.departure < ui.arrival) { //ToDo: Is this check enough
+            info.edgesByType.get(EdgeType.Cross).put(e.getHashKey(), e);
+          } else if (!t.containsKey(e.getHashKey())) {
+            System.out.println("\n\n\nFAILURE --Something is wrong!! Control should never reach here!!\n\n");
+          }
+        } else {
+          System.out.print("Node not part of connected graph: ");
+          System.out.print(ui == null ? e.u.id : "");
+          System.out.println(vi == null ? e.v.id : "");
+        }
+      });
+    });
   }
 
   private static <T> int depthFirstTraversalInternal(AdjacencyList.Node<T> n, Info<T> info, int arrival) {
@@ -168,13 +172,51 @@ public class AdjacencyLists {
         continue;
       }
 
-      n.edgeList.stream()
-          .forEach(e -> q.add(e.v));
+      n.edgeList.stream().forEach(e -> q.add(e.v));
 
       System.out.print("[" + n.id + "," + n.data + "], ");
 
       ni.visited = true;
     }
     System.out.println();
+  }
+
+  static <T> void dijkstraShortestPath(AdjacencyList<T> g, AdjacencyList.Node<T> start) {
+    Info<T> info = new Info<>();
+    Map<Integer, NodeInfo<T>> nodeInfo = info.nodeInfo;
+    PriorityQueue<NodeInfo<T>> q = new PriorityQueue<>((o1, o2) -> o1.distance - o2.distance);
+
+    Consumer<AdjacencyList.Node<T>> addNodeInfo = n -> {
+      if (!nodeInfo.containsKey(n.id)) {
+        NodeInfo<T> ni = new NodeInfo<>();
+        ni.n = n;
+        ni.distance = Integer.MAX_VALUE;
+        nodeInfo.put(n.id, ni);
+      }
+    };
+
+    addNodeInfo.accept(start);
+    nodeInfo.get(start.id).distance = 0;
+    q.add(nodeInfo.get(start.id));
+
+    while (!q.isEmpty()) {
+      NodeInfo<T> uNi = q.poll();
+
+      uNi.n.edgeList.forEach(e -> addNodeInfo.accept(e.v));
+
+      uNi.n.edgeList.stream().filter(e -> !nodeInfo.get(e.v.id).visited).forEach(e -> {
+        NodeInfo<T> vNi = nodeInfo.get(e.v.id);
+
+        if ((uNi.distance + e.weight) < vNi.distance) {
+          vNi.distance = uNi.distance + e.weight;
+          vNi.parent = e.u;
+        }
+        q.add(vNi);
+      });
+
+      uNi.visited = true;
+    }
+
+    printGraphWithInfo(g, info);
   }
 }

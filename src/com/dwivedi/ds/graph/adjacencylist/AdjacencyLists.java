@@ -1,12 +1,13 @@
 package com.dwivedi.ds.graph.adjacencylist;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 public class AdjacencyLists {
@@ -218,5 +219,115 @@ public class AdjacencyLists {
     }
 
     printGraphWithInfo(g, info);
+  }
+
+  static <T> List<AdjacencyList.Edge<T>> travellingSalesmanBruteForce(AdjacencyList<T> g) {
+    Map<Integer, NodeInfo<T>> nodeInfo = new HashMap<>();
+    List<AdjacencyList.Edge<T>> path =
+        recTravellingSalesmanBruteForce(g.graph, g.graph.get(0), g.graph.get(0), new ArrayList<>());
+    System.out.println("Cheapest path: " + path);
+    return path;
+  }
+
+  private static <T> List<AdjacencyList.Edge<T>> recTravellingSalesmanBruteForce(List<AdjacencyList.Node<T>> graph,
+      AdjacencyList.Node<T> s, AdjacencyList.Node<T> f, List<AdjacencyList.Edge<T>> traversed) {
+    List<AdjacencyList.Edge<T>> path = new ArrayList<>();
+
+    //base case
+    if (traversed.size() == graph.size() - 1) {
+      path.add(s.edgeList.stream().filter(e -> e.v.id == f.id).findFirst().get());
+      return path;
+    }
+
+    //recursion
+    int minRemainingCost = Integer.MAX_VALUE;
+
+    for (AdjacencyList.Edge<T> e : s.edgeList) {
+      if ((e.v.id == f.id) || (traversed.stream().anyMatch(e1 -> e1.v.id == e.v.id))) {
+        continue;
+      }
+
+      traversed.add(e);
+      List<AdjacencyList.Edge<T>> remainingPath = recTravellingSalesmanBruteForce(graph, e.v, f, traversed);
+      traversed.remove(traversed.size() - 1);
+
+      int remainingCost = getPathCost(remainingPath) + e.weight;
+
+      if (remainingCost < minRemainingCost) {
+        minRemainingCost = remainingCost;
+
+        path.clear();
+        path.add(e);
+        path.addAll(remainingPath);
+      }
+    }
+
+    return path;
+  }
+
+  static <T> List<AdjacencyList.Edge<T>> travellingSalesmanBranchAndBound(AdjacencyList<T> g) {
+    Map<Integer, NodeInfo<T>> nodeInfo = new HashMap<>();
+    List<AdjacencyList.Edge<T>> path =
+        recTravellingSalesmanBranchAndBound(g.graph, g.graph.get(0), g.graph.get(0), new ArrayList<>(),
+            new ArrayList<>());
+    System.out.println("Cheapest path: " + path);
+    return path;
+  }
+
+  private static <T> int getPathCost(List<AdjacencyList.Edge<T>> path) {
+    int cost = 0;
+    for (AdjacencyList.Edge<T> e : path) {
+      cost = cost + e.weight;
+    }
+
+    return cost;
+  }
+
+  private static <T> List<AdjacencyList.Edge<T>> recTravellingSalesmanBranchAndBound(List<AdjacencyList.Node<T>> graph,
+      AdjacencyList.Node<T> s, AdjacencyList.Node<T> f, List<AdjacencyList.Edge<T>> traversed,
+      List<AdjacencyList.Edge<T>> cheapest) {
+    List<AdjacencyList.Edge<T>> path = new ArrayList<>();
+
+    //base case
+    if (traversed.size() == graph.size() - 1) {
+      path.add(s.edgeList.stream().filter(e -> e.v.id == f.id).findFirst().get());
+      if (cheapest.isEmpty() || (getPathCost(traversed) + getPathCost(path) < getPathCost(cheapest))) {
+        cheapest.clear();
+        cheapest.addAll(traversed);
+        cheapest.addAll(path);
+      }
+      return path;
+    }
+
+    //recursion
+    int minRemainingCost = Integer.MAX_VALUE;
+    int traversedCost = getPathCost(traversed);
+
+    for (AdjacencyList.Edge<T> e : s.edgeList) {
+      int cheapestCost = getPathCost(cheapest);
+      if ((e.v.id == f.id) || (traversed.stream().anyMatch(e1 -> e1.v.id == e.v.id)) || (!cheapest.isEmpty()
+          && traversedCost + e.weight > cheapestCost)) {
+        continue;
+      }
+
+      traversed.add(e);
+      List<AdjacencyList.Edge<T>> remainingPath =
+          recTravellingSalesmanBranchAndBound(graph, e.v, f, traversed, cheapest);
+      traversed.remove(traversed.size() - 1);
+
+      if (!remainingPath.isEmpty()) {
+        int remainingCost = getPathCost(remainingPath) + e.weight;
+
+        if (remainingCost < minRemainingCost) {
+          minRemainingCost = remainingCost;
+
+          path.clear();
+          path.add(e);
+          path.addAll(remainingPath);
+        }
+      }
+    }
+
+    return path;
   }
 }

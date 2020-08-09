@@ -4,6 +4,8 @@ import com.dwivedi.common.Person;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,13 +23,48 @@ public class AdjacencyListTest {
       Supplier<Integer> rand = () -> (int) (Math.random() * 1000);
       AdjacencyList<Integer> g = type == 'n' ? populateRandomGraph(10, rand) : populateCompleteGraph(10, rand);
       testGraph(g);
+      if (type == 'y') {
+        testTravellingSalesman(g, type);
+      }
     } else if (node == 'p') {
       Supplier<Person> pRand = () -> new Person((int) (Math.random() * 100));
       AdjacencyList<Person> g = type == 'n' ? populateRandomGraph(10, pRand) : populateCompleteGraph(10, pRand);
       testGraph(g);
+      if (type == 'y') {
+        testTravellingSalesman(g, type);
+      }
     } else {
       System.out.println("Choose wisely!!");
     }
+  }
+
+  static <T> void testTravellingSalesman(AdjacencyList<T> g, char choice) {
+    if (choice == 'n') {
+      return;
+    }
+
+    Function<List<AdjacencyList.Edge<T>>, Integer> cost = edges -> {
+      int c = 0;
+      for(AdjacencyList.Edge<T> e: edges){
+        c += e.weight;
+      }
+      return c;
+    };
+
+    BiFunction<Function<AdjacencyList<T>, List<AdjacencyList.Edge<T>>>, AdjacencyList<T>, List<AdjacencyList.Edge<T>>>
+        timed = (f, graph) -> {
+      long s = System.nanoTime();
+      List<AdjacencyList.Edge<T>> path = f.apply(graph);
+      long e = System.nanoTime();
+      System.out.println("Total cost: " + cost.apply(path));
+      System.out.println("Time taken: " + (e - s) / 1000 + " micro seconds");
+      return path;
+    };
+
+    System.out.println("\nTravelling salesman - Brute force:");
+    timed.apply(AdjacencyLists::travellingSalesmanBruteForce, g);
+    System.out.println("\nTravelling salesman - Branch and bound:");
+    timed.apply(AdjacencyLists::travellingSalesmanBranchAndBound, g);
   }
 
   static <T> void testGraph(AdjacencyList<T> g) {
@@ -52,7 +89,7 @@ public class AdjacencyListTest {
           AdjacencyList.Edge<T> e = new AdjacencyList.Edge<>();
           e.u = n;
           e.v = g.graph.get(index.get(i));
-          e.weight = (int)(Math.random()*10);
+          e.weight = (int) (Math.random() * 10);
           n.edgeList.add(e);
         }
       });
@@ -69,7 +106,7 @@ public class AdjacencyListTest {
         AdjacencyList.Edge<T> e = new AdjacencyList.Edge<>();
         e.u = u;
         e.v = v;
-        e.weight = (int)(Math.random()*10);
+        e.weight = (int) (Math.random() * 10);
         u.edgeList.add(e);
       });
     });
